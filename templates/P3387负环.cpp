@@ -98,7 +98,7 @@ inline bool SPFA()
 					calc[node]++;
 					Q.push(node);
 					flag[node] = true;
-					if(calc[node] >= N && value[i] < 0)
+					if(calc[node] > N && value[i] < 0)
 						return true;
 				}
 			}

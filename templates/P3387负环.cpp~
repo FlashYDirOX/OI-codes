@@ -45,6 +45,7 @@ int main()
 				add_edge(v, u, w);
 			}
 		}
+		init();
 		SPFA() ? puts("YE5") : puts("N0");
 	}
 
@@ -79,8 +80,6 @@ inline void init ()
 
 inline bool SPFA()
 {
-	init();
-
 	d[1] = 0;
 	Q.push(1);
 	flag[1] = true;
