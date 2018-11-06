@@ -7,7 +7,7 @@ using std::priority_queue;
 
 const int MAXN = 100001;
 const int MAXM = 200001;
-const int INF = 1e9;
+const int INF = 2147483647;
 
 struct Node {
 	int num, dist;
@@ -21,8 +21,6 @@ priority_queue<Node> Q;
 
 int N, M, S, d[MAXN];
 int start[MAXM], nxt[MAXM], to[MAXM], value[MAXM], e;
-
-bool flag[MAXN];
 
 inline void add_edge ( int u, int v, int w );
 
@@ -64,19 +62,17 @@ inline void Dijkstra ()
 {
 	REP(i, 1, N)
 		d[i] = INF;
-	flag[S] = 1;
 	d[S] = 0;
 	Q.push((Node){S, 0});
 	while(!Q.empty()){
 		Node now = Q.top();
 		Q.pop();
-		flag[now.num] = false;
+		if(now.dist ^ d[now.num])
+			continue ;
 		for(int i = start[now.num]; i; i = nxt[i]){
 			int node = to[i];
-			if(d[node] > d[now.num] + value[i])
+			if(d[node] > d[now.num] + value[i]){
 				d[node] = d[now.num] + value[i];
-			if(!flag[node]){
-				flag[node] = true;
 				Q.push((Node){node, d[node]});
 			}
 		}

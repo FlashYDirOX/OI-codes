@@ -2,8 +2,7 @@
 
 #define REP(i, a, b) for(register int i = a; i <= b; i++)
 
-const int MAXN = 501;
-const int d[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+const int MAXN = 51;
 
 int N, M;
 int G[MAXN][MAXN];
@@ -16,10 +15,11 @@ int main()
 #endif
 
 	scanf("%d%d", &N, &M);
-	
+
 	REP(i, 1, N)
-		REP(j, 1, M)
+		REP(j, 1, M){
 			scanf("%d", &G[i][j]);
+		}
 
 	return 0;
 }

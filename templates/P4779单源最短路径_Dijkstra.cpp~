@@ -7,7 +7,7 @@ using std::priority_queue;
 
 const int MAXN = 100001;
 const int MAXM = 200001;
-const int INF = 1e9;
+const int INF = 2147483647;
 
 struct Node {
 	int num, dist;
@@ -46,7 +46,7 @@ int main()
 	Dijkstra();
 
 	REP(i, 1, N)
-		printf("%d", d[i]);
+		printf("%d ", d[i]);
 
 	return 0;
 }
@@ -71,12 +71,12 @@ inline void Dijkstra ()
 		Node now = Q.top();
 		Q.pop();
 		flag[now.num] = false;
+		if(now.dist ^ d[now.num])
+			continue ;
 		for(int i = start[now.num]; i; i = nxt[i]){
 			int node = to[i];
-			if(d[node] > d[now.num] + value[i])
+			if(d[node] > d[now.num] + value[i]){
 				d[node] = d[now.num] + value[i];
-			if(!flag[node]){
-				flag[node] = true;
 				Q.push((Node){node, d[node]});
 			}
 		}
