@@ -7,17 +7,12 @@
 
 using std::queue;
 
-const int MAXN = 10001;
-const int MAXM = 100001;
-const int INF = 0x3f3f3f3f;
-
-queue<int> Q;
+const int MAXM = 100010;
+const int INF = 1e9;
 
 int N, M, S, T;
-int e, start[MAXN], nxt[MAXM], capa[MAXM], to[MAXM], flow[MAXM];
+int e, start[MAXM], nxt[MAXM], capa[MAXM], to[MAXM], flow[MAXM];
 int level[MAXM], ans;
-
-inline void IN ();
 
 inline void add_edge ( int u, int v, int w );
 
@@ -32,11 +27,17 @@ int main()
 	freopen("out", "w", stdout);
 #endif
 
-	IN();
+	scanf("%d%d%d%d", &N, &M, &S, &T);
 
-	while(bfs()){
-		ans += dfs(S, INF);
+	REP(i, 1, M){
+		int u, v, w;
+		scanf("%d%d%d", &u, &v, &w);
+		add_edge(u, v, w);
+		add_edge(v, u, 0);
 	}
+
+	while(bfs())
+		ans += dfs(S, INF);
 
 	printf("%d", ans);
 
@@ -53,27 +54,15 @@ inline void add_edge ( int u, int v, int w )
 	flow[e] = 0;
 }
 
-inline void IN ()
-{
-	scanf("%d%d%d%d", &N, &M, &S, &T);
-
-	REP(i, 1, M){
-		int u, v, w;
-		scanf("%d%d%d", &u, &v, &w);
-		add_edge(u, v, w);
-		add_edge(v, u, 0);
-	}
-}
-
 inline bool bfs ()
 {
 	memset(level, 0, sizeof(level));
-	while(!Q.empty())
-		Q.pop();
+	queue<int> Q;
 	Q.push(S);
 	level[S] = 1;
 	while(!Q.empty()){
 		int now = Q.front();
+		Q.pop();
 		for(int i = start[now]; i; i = nxt[i]){
 			int node = to[i];
 			if(!level[node] && capa[i] > flow[i]){
@@ -82,7 +71,9 @@ inline bool bfs ()
 			}
 		}
 	}
-	return level[T] ? 1 : 0;
+	if(level[T])
+		return true;
+	return false;
 }
 
 inline int dfs ( int x, int maxflow )
@@ -90,13 +81,15 @@ inline int dfs ( int x, int maxflow )
 	int addflow = 0;
 	if(x == T)
 		return maxflow;
-	for(int i = start[x]; i; i = nxt[i]){
+	for(int i = start[x]; i && addflow < maxflow; i = nxt[i]){
 		int node = to[i];
-		if(level[x + 1] == level[node]){
+		if(level[x] + 1 == level[node] && capa[i] > flow[i]){
 			int tmp = dfs(node, std::min(maxflow - addflow, capa[i] - flow[i]));
-			flow[i] += tmp;
-			flow[to[i]] -= tmp;
-			addflow += tmp;
+			if (tmp > 0)
+			{
+				flow[i] += tmp;
+				flow[i ^ 1] -= tmp;
+			}
 		}
 	}
 	return addflow;
