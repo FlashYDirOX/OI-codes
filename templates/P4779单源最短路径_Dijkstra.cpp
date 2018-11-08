@@ -71,8 +71,8 @@ inline void Dijkstra ()
 			continue ;
 		for(int i = start[now.num]; i; i = nxt[i]){
 			int node = to[i];
-			if(d[node] > value[i]){
-				d[node] = value[i];
+			if(d[node] > d[now.num] + value[i]){
+				d[node] = d[now.num] + value[i];
 				Q.push((Node){node, d[node]});
 			}
 		}
