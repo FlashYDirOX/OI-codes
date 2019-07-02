@@ -1,0 +1,11 @@
+#!/bin/bash
+while true; do
+    ./gen > input
+    ./run < input > out.run
+    ./program < input > out
+    diff out.run out
+    if [ $? -ne 0 ]; then echo WA
+	    break;
+    fi
+    echo OK
+done
