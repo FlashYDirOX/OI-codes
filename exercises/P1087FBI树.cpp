@@ -15,7 +15,7 @@ inline char pd ( int, int );
 
 int main()
 {
-#ifndef ONLINEflagJUDGE
+#ifndef ONLINE_JUDGE
 	freopen("in", "r", stdin);
 	freopen("out", "w", stdout);
 #endif
