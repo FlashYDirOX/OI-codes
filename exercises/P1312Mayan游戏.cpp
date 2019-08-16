@@ -6,9 +6,11 @@ const int MAXN = 8;
 const int move[2][2] = {{-1, 0}, {1, 0}};
 const int d[4][2] = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
 
-int G[MAXN][MAXN];
+int G[MAXN][MAXN], N;
 
 inline void scan();
+
+inline void dfs ( int );
 
 int main()
 {
@@ -31,4 +33,8 @@ inline void scan()
 		int cnt = 1;
 		for(;~scanf("%d", &G[i][cnt]), G[i][cnt] != 0; cnt++)
 	}
+}
+
+inline void dfs ( int step )
+{
 }
