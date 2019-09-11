@@ -16,9 +16,7 @@ bool flag[MAXN];
 
 inline void add_edge ( int, int );
 
-inline void dfs ( int, int );
-
-//inline void dfs ( int );
+inline void dfs ( int );
 
 inline int lca ( int, int );
 
@@ -39,8 +37,7 @@ int main()
 	}
 
 	deep[S] = 1;
-//	dfs(S);
-	dfs(S, 0);
+	dfs(S);
 
 	rep(i, 1, M){
 		int u, v;
@@ -58,11 +55,10 @@ inline void add_edge ( int u, int v )
 	to[e] = v;
 }
 
-/*
 inline void dfs ( int node )
 {
 	flag[node] = true;
-	for(register int i = 1; i <= 20; i++)
+	rep(i, 1, 20)
 		f[node][i] = f[f[node][i - 1]][i - 1];
 	for(register int i = start[node]; i; i = nxt[i]){
 		if(flag[to[i]])
@@ -73,8 +69,8 @@ inline void dfs ( int node )
 		dfs(to[i]);
 	}
 }
-*/
 
+/*
 inline void dfs ( int node, int father )
 {
 	deep[node] = deep[father] + 1;
@@ -87,6 +83,7 @@ inline void dfs ( int node, int father )
 		dfs(to[i], node);
 	}
 }
+*/
 
 inline int lca ( int u, int v )
 {
@@ -100,10 +97,12 @@ inline int lca ( int u, int v )
 	if(u == v)
 		return u;
 	frep(i, 20, 0)
-		if(f[u][i] != f[v][i]){
-			u = f[u][i]; v = f[v][i];
+		if(f[u][i] == f[v][i])
+			continue ;
+		else{
+			u = f[u][i];
+			v = f[v][i];
 		}
-		else break ;
 
 	return f[u][0];
 }
