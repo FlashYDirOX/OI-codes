@@ -1,144 +1,78 @@
-#include <cstdio>
-#include <cctype>
-#include <algorithm>
-#include <cstdlib>
-#include <cstring>
-
-#define rep(i, a, b) for(register int i = a; i <= b; i++)
-#define frep(i, a, b) for(register int i = a; i >= b; i--)
-
-using std::swap;
-
-const int MAXN = 300001;
-const int MAXM = 300001;
-const int MOD = 998244353;
-const int DEEP = 30;
-const int MAXK = 51;
-
-int N, M, k;
-int deep[MAXN], f[MAXN][DEEP], d[MAXN][MAXK];
-int start[MAXM], to[MAXM], nxt[MAXM], e;
-bool sign[MAXM];
-
-inline int read ();
-
-inline void add_edge ( int, int );
-
-inline void dfs ( int, int );
-
-inline int ksm ( int, int );
-
-inline int lca ( int, int );
-
-inline void init ();
-
-inline int calc ( int, int );
-
-int main()
-{
-#ifndef ONLINE_JUDGE
-	freopen("in", "r", stdin);
-	freopen("out", "w", stdout);
-#endif
-
-	N = read();
-
-	rep(i, 1, N - 1){
-		int u = read(), v = read();
-		add_edge(u, v);
-		add_edge(v, u);
-	}
-
-	scanf("%d", &M); 
-	rep(i, 1, M){
-		int u = read(), v = read();
-		k = read();
-		if(!sign[k])
-			init();
-		printf("%d\n", calc(u, v));
-	}
-
-	return 0;
+#include <bits/stdc++.h>
+#define int long long 
+#define re register
+using namespace std;
+const int maxn=300500,mod=998244353;
+struct nood {
+    int nex,to;
+} e[maxn<<2];
+int head[maxn],fa[maxn][25],dep[maxn];
+int n,m,cnt,res,ans,vis[maxn],pre[maxn][55];
+inline int ksm(int a,int b) {
+    int ret=1;
+    while(b) {
+        if(b&1) ret=ret*a%mod;
+        a=a*a%mod;
+        b>>=1;
+    }
+    return ret%mod;
+}//快速幂
+inline void add_edge(int u,int v) {
+    e[++cnt].nex=head[u];
+    head[u]=cnt;
+    e[cnt].to=v;
 }
-
-inline int read ()
-{
-	int var = 0;
-	char c = getchar();
-	while(!isdigit(c))
-		c = getchar();
-	while(isdigit(c)){
-		var = ( var << 1 ) + ( var << 3 ) + c - 48;
-		c = getchar();
-	}
-	return var;
+inline void dfs(int u,int f) {
+    dep[u]=dep[f]+1;
+    fa[u][0]=f;
+    for ( re int i=1;i<=50;i++ ) 
+        pre[u][i]=(pre[f][i]+ksm(dep[u],i)+mod)%mod;
+    //因为k最多只有50，所以直接暴力预处理每一个pre数组
+    for ( re int i=head[u];i;i=e[i].nex ) {
+        int v=e[i].to;
+        if(v==f) continue;
+        dfs(v,u);
+    }
 }
-
-inline void add_edge ( int u, int v )
-{
-	nxt[++e] = start[u];
-	start[u] = e;
-	to[e] = v;
+inline int Lca(int x,int y) {
+    if(dep[x]>dep[y]) swap(x,y);
+    for ( re int i=20;i>=0;i-- ) 
+        if(dep[x]<=dep[y]-(1<<i)) y=fa[y][i];
+    if(x==y) return x;
+    for ( re int i=20;i>=0;i-- ) 
+        if(fa[x][i]!=fa[y][i]) 
+            x=fa[x][i],y=fa[y][i];
+    return fa[x][0];
+}//纯种lca模板
+inline int read() {
+    int sum=0,ff=1; char ch=getchar();
+    while(ch<'0' or ch>'9') { if(ch=='-') ff=-1; ch=getchar(); }
+    while(ch>='0' and ch<='9') { sum=(sum*10+ch-'0'); ch=getchar(); }
+    return sum*ff;
 }
+signed main() {
+//  freopen("BJOI2018.in","r",stdin);
+//  freopen("BJOI2018.out","w",stdout);
+    n=read();
+    for ( re int i=1;i<=n-1;i++ ) {
+        int u=read(),v=read();
+        add_edge(u,v);
+        add_edge(v,u);
+    }
 
-inline void dfs ( int node, int father )
-{
-	deep[node] = deep[father] + 1;
-	d[node][k] = (d[father][k] + ksm(deep[node], k) % MOD) % MOD;
-	rep(i, 1, DEEP)
-		f[node][i] = f[f[node][i - 1]][i - 1];
-	for(register int i = start[node]; i; i = nxt[i]){ 
-		if(to[i] == father)
-			continue ;
-		f[to[i]][0] = node;
-		dfs(to[i], node);
-	}
-}
-
-inline int ksm ( int a, int b )
-{
-	int cnt = 1;
-	while(b){
-		if(b & 1)
-			cnt = cnt * a % MOD;
-		a = a * a % MOD;
-		b >>= 1;
-	}
-	return cnt;
-}
-
-inline int lca ( int u, int v )
-{
-	int step;
-	if(deep[u] > deep[v])
-		swap(u, v);
-	step = deep[v] - deep[u];
-	rep(i, 0, DEEP)
-		if( ( 1 << i ) & step )
-			v = f[v][i];
-	if(u == v)
-		return u;
-	frep(i, DEEP, 0)
-		if(f[u][i] == f[v][i])
-			continue ;
-		else{
-			u = f[u][i];
-			v = f[v][i];
-		}
-	return f[u][0];
-}
-
-inline void init ()
-{
-	sign[k] = true;
-	memset(f, 0, sizeof(f));
-	memset(deep, 0, sizeof(deep));
-	deep[0] = -1;
-	dfs(1, 0);
-}
-
-inline int calc ( int u, int v )
-{
-	int cnt = d[u][k] + d[v][k] - d[lca(u, v)][k] - d[f[lca(u, v)][0]][k];
-	return cnt % MOD;
+    dep[1]=-1; dfs(1,1);//电风扇预处理deep数组
+    for ( re int j=1;j<=21;j++ ) 
+        for ( re int i=1;i<=n;i++ ) 
+            fa[i][j]=fa[fa[i][j-1]][j-1];
+    //倍增预处理fa数组
+    int q=read();
+    while(q--) {
+        int x=read(),y=read(),z=read();
+        int lca=Lca(x,y);
+        int sum1=(pre[x][z]+pre[y][z]+mod)%mod;
+        int sum2=(pre[lca][z]+pre[fa[lca][0]][z]+mod)%mod;
+        //套用公式
+        printf("%lld\n",((sum1-sum2)+mod)%mod);
+    }
+    return 0;
 }

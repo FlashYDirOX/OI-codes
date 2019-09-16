@@ -1,0 +1,156 @@
+#include <cstdio>
+#include <cctype>
+#include <algorithm>
+
+#define rep(i, a, b) for(register int i = a; i <= b; i++)
+#define frep(i, a, b) for(register int i = a; i >= b; i--)
+
+using std::sort;
+using std::swap;
+using std::max;
+using std::min;
+
+const int MAXN = 10001;
+const int MAXM = 50001 << 1;
+const int DEEP = 64;
+const int INF = 0x3f3f3f3f; 
+struct node {
+	int u, v, w;
+	inline bool operator < (const node &a)const {
+		return w < a.w;
+	}
+}G[MAXM];
+
+int N, M, Q;
+int father[MAXN];
+int e, start[MAXM], nxt[MAXM], to[MAXM], value[MAXM];
+int deep[MAXN], f[MAXN][DEEP + 1], dist[MAXN][DEEP + 1];
+bool sign[MAXN];
+
+inline int read ();
+
+inline void kruscal ();
+
+inline int find ( int );
+
+inline void add_edge ( int, int, int );
+
+inline void dfs ( int, int );
+
+inline int lca ( int, int );
+
+signed main()
+{
+#ifndef ONLINE_JUDGE
+	freopen("in", "r", stdin);
+	freopen("out", "w", stdout);
+#endif
+
+	N = read(), M = read();
+
+	kruscal();
+
+	rep(i, 1, N)
+		rep(j, 0, DEEP)
+			dist[i][j] = INF;
+
+	rep(i, 1, N){
+		if(!sign[i])
+			dfs(i, 0);
+	}
+
+	Q = read();
+
+	rep(i, 1, Q){
+		int u = read(), v = read();
+		printf("%d\n", find(u) == find(v) ? lca(u, v) : -1);
+	}
+
+	return 0;
+}
+
+inline int read ()
+{	
+	int var = 0;
+	char c = getchar();
+	while(!isdigit(c))
+		c = getchar();
+	while(isdigit(c)){
+		var = ( var << 1 ) + ( var << 3 ) + c - 48;
+		c = getchar();
+	}
+	return var;
+}
+
+inline void kruscal ()
+{
+	rep(i, 1, N)
+		father[i] = i;
+	rep(i, 1, M)
+		G[i].u = read(), G[i].v = read(), G[i].w = read();
+	sort(G + 1, G + 1 + M);
+	rep(i, 1, M){
+		int u = G[i].u, v = G[i].v, w = G[i].w, fu = find(u), fv = find(v);
+		if(fu != fv){
+			father[v] = fu;
+			add_edge(u, v, w);
+			add_edge(v, u, w);
+		}
+	}
+}
+
+inline int find ( int x )
+{
+	return x == father[x] ? x : father[x] = find(father[x]);
+}
+
+inline void add_edge ( int u, int v, int w )
+{
+	nxt[++e] = start[u];
+	start[u] = e;
+	to[e] = v;
+	value[e] = w;
+}
+
+inline void dfs ( int step, int prev )
+{
+	sign[step] = true;
+	deep[step] = deep[prev] + 1;
+	rep(i, 1, DEEP){
+		f[step][i] = f[f[step][i - 1]][i - 1];
+		dist[step][i] = min(dist[step][i - 1], dist[f[step][i - 1]][i - 1]);
+	}
+	for(register int i = start[step]; i; i = nxt[i]){
+		if(to[i] == prev)
+			continue ;
+		dist[to[i]][0] = value[i];
+		f[to[i]][0] = step;
+		dfs(to[i], step);
+	}
+}
+
+inline int lca ( int u, int v )
+{
+	int d, cnt = INF;
+	if(deep[u] > deep[v])
+		swap(u, v);
+	d = deep[v] - deep[u];
+	rep(i, 1, DEEP)
+		if(d & (1 << i)){
+			cnt = min(cnt, f[v][i]);
+			v = f[v][i];
+		}
+	if(u == v)
+		return u;
+	frep(i, DEEP, 0){
+		if(f[u][i] == f[v][i])
+			continue ;
+		else{
+			cnt = min(cnt, min(dist[u][i], dist[v][i]));
+			u = f[u][i];
+			v = f[v][i];
+		}
+	}
+	cnt = min(cnt, min(dist[u][0], dist[v][0]));
+	return cnt;
+}
