@@ -1,0 +1,74 @@
+#include <cstdio>
+#include <cstdlib>
+#include <algorithm>
+
+#define rep(i, a, b) for(register int i = a; i <= b; i++)
+
+const int MAXN = 20001;
+const int MAXM = 100001;
+
+struct edge {
+	int u, v, w;
+}G[MAXM];
+
+int N, M;
+int father[MAXN], f[MAXN]; 
+
+inline int find ( int );
+
+inline bool compare ( edge u, edge v );
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+	freopen("in", "r", stdin);
+	freopen("out", "w", stdout);
+#endif
+
+	scanf("%d%d", &N, &M);
+
+	rep(i, 1, M){
+		scanf("%d%d%d", &G[i].u, &G[i].v, &G[i].w);
+	}
+
+	rep(i, 1, N)
+		father[i] = i;
+
+	std::sort(G + 1, G + M + 1, compare);
+
+	rep(i, 1, M){
+		int u = G[i].u, v = G[i].v, fu = find(G[i].u), fv = find(G[i].v);
+		if(fu != fv){
+			if(!f[u])
+				f[u] = v;
+			else {
+				fu = find(f[u]);
+				father[fu] = fv;
+			}
+			if(!f[v])
+				f[v] = u;
+			else {
+				fv = find(f[v]);
+				father[fv] = fu;
+			}
+		}
+		else{
+			printf("%d", G[i].w);
+			exit(0);
+		}
+	}
+
+	puts("0");
+
+	return 0;
+}
+
+inline int find ( int x )
+{
+	return father[x] == x ? x : father[x] = find(father[x]);
+}
+
+inline bool compare ( edge u, edge v )
+{
+	return u.w > v.w;
+}

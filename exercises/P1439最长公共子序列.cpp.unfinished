@@ -1,0 +1,32 @@
+#include <cstdio>
+#include <algorirthm>
+
+#define rep(i, a, b) for(register int i = a; i <= b; i++)
+
+const int MAXN = 100010;
+
+int a[MAXN], f[MAXN], b[MAXN], c[MAXN];
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+	freopen("in", "r", stdin);
+	freopen("out", "w", stdout);
+#endif
+
+	scanf("%d", &N);
+
+	rep(i, 1, N){
+		scanf("%d", &a[i]);
+		to[a[i]] = i;
+	}
+		
+	rep(i, 1, N)
+		scanf("%d", &b[i]);
+
+	rep(i, 1, N){
+		if(
+	}
+	
+	return 0;
+}

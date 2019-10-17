@@ -1,0 +1,89 @@
+#include <cstdio>
+#include <cctype>
+#include <cstdlib>
+#include <cstring>
+
+#define rep(i, a, b) for(register int i = a; i <= b; i++)
+#define mid ((f + l) >> 1)
+#define lson rt << 1, f, mid
+#define rson rt << 1 | 1, mid + 1, l
+
+const int MAXN = 1e6 + 1;
+const int MAXX = 1e6;
+
+int N, M, ans;
+int a[MAXN << 2], cnt[MAXN << 2];
+bool flag[MAXX];
+
+inline int read ();
+
+inline void build ( int, int, int );
+
+inline int query ( int, int, int, int, int );
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+	freopen("in", "r", stdin);
+	freopen("out", "w", stdout);
+#endif
+
+	N = read();
+
+	build(1, 1, N);
+
+	rep(i, 1, N)printf("%d ", cnt[i]);puts("");
+
+	M = read();
+
+	rep(i, 1, M){
+		int L = read(), R = read();
+		ans = query(1, 1, N, L, R);
+		printf("%d\n", ans);
+	}
+
+	return 0;
+}
+
+inline int read ()
+{
+	int x = 0;
+	char c = getchar();
+	while(!isdigit(c))
+		c = getchar();
+	while(isdigit(c)){
+		x = ( x << 1 + x << 3 ) + c - 48;
+		c = getchar();
+	}
+	return x;
+}
+
+inline void build ( int rt, int f, int l )
+{
+	int sum = 0;
+	if(f == l){
+		a[rt] = read();
+		if(!flag[a[rt]]){
+			sum++;
+			flag[a[rt]] = 1;
+		}
+		return ;
+	}
+	
+	build(lson);
+	build(rson);
+	cnt[rt] += sum;
+	memset(flag, 0, sizeof(flag));
+}
+
+inline int query ( int rt, int f, int l, int L, int R )
+{
+	int count = 0;
+	if(L >= f && R <= l)
+		return cnt[rt];
+	else {
+		 count += query(lson, L, R);
+		 count += query(rson, L, R);
+	}
+	return count;
+}

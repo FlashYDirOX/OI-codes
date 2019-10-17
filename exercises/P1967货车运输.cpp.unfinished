@@ -11,8 +11,8 @@ using std::max;
 using std::min;
 
 const int MAXN = 10001;
-const int MAXM = 50001 << 1;
-const int DEEP = 64;
+const int MAXM = 50001;
+const int DEEP = 20;
 const int INF = 0x3f3f3f3f; 
 struct node {
 	int u, v, w;
@@ -50,14 +50,18 @@ signed main()
 
 	kruscal();
 
-	rep(i, 1, N)
-		rep(j, 0, DEEP)
-			dist[i][j] = INF;
-
 	rep(i, 1, N){
 		if(!sign[i])
 			dfs(i, 0);
+		f[i][0] = i;
+		dist[i][0] = INF;
 	}
+
+	rep(i, 1, DEEP)
+		rep(j, 1, N){
+			f[j][i] = f[f[j][i - 1]][i - 1];
+			dist[j][i] = min(dist[j][i - 1], dist[f[j][i - 1]][i - 1]);
+		}
 
 	Q = read();
 
@@ -116,10 +120,6 @@ inline void dfs ( int step, int prev )
 {
 	sign[step] = true;
 	deep[step] = deep[prev] + 1;
-	rep(i, 1, DEEP){
-		f[step][i] = f[f[step][i - 1]][i - 1];
-		dist[step][i] = min(dist[step][i - 1], dist[f[step][i - 1]][i - 1]);
-	}
 	for(register int i = start[step]; i; i = nxt[i]){
 		if(to[i] == prev)
 			continue ;
