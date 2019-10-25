@@ -1,81 +1,56 @@
-#include <cstdio>
-#include <cmath>
-#include <algorithm>
-
-#define rep(i, a, b) for(register int i = a; i <= b; i++)
-
-using std::min;
-using std::max;
-
-const int MAXN = 151;
-const int INF = 0x3f3f3f3f;
-
-int N, flag = 1;
-int G[MAXN][MAXN], x[MAXN], y[MAXN], dist[MAXN][MAXN], father[MAXN], maxd[MAXN];
-
-inline void dfs ( int node );
-
-inline double calc ( int, int );
-
+#include<iostream>
+#include<algorithm>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<cstdlib>
+using namespace std;
+const int maxn=150+10;
+const int inf=0x3f3f3f3f;
+struct node
+{
+    int x;
+    int y;
+}a[maxn];
+double cal(int i,int j)
+{
+    return sqrt((a[i].x-a[j].x)*(a[i].x-a[j].x)+(a[i].y-a[j].y)*(a[i].y-a[j].y));
+}
+int n;
+double dis[maxn][maxn],ldis[maxn],l1,l2=inf,ans;
 int main()
 {
 #ifndef ONLINE_JUDGE
 	freopen("in", "r", stdin);
 	freopen("out", "w", stdout);
 #endif
-
-	scanf("%d", &N);
-	rep(i, 1, N)
-		scanf("%d%d", &x[i], &y[i]);
-	rep(i, 1, N){
-		rep(j, 1, N){
-			dist[i][j] = INF;
-			int value;
-			scanf("%d%d", &value);
-			if(value)
-				dist[i][j] = sqrt(i, j);
-		}
-		dist[i][i] = 0;
-	}
-
-	rep(k, 1, N)
-		rep(i, 1, N)
-			rep(j, 1, N)
-				if(i != j && j != k)
-					if(dist[i][k] != INF && dist[k][j] != INF)
-						dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
-
-	rep(i, 1, N)
-		if(!sign[i]){
-			dfs(i);
-			flag = 2;
-		}
-
-	rep(i, 1, N)
-		rep(j, 1, N){
-			if(dist[i][j] != INF)
-				maxd[i] = max(maxd[i], dist[i][j]);
-			cnt = max(cnt, maxd[i]);
-		}
-
-	rep(i, 1, N)
-		rep(j, 1, N){
-		}
-
-	return 0;
-}
-
-inline void dfs ( int node )
-{
-	if(sign[node])
-		return ;
-	for(register int i = start[node]; i; i = nxt[i]){
-		sign[node] = flag;
-		dfs(to[i]);
-	}
-}
-
-inline double calc ( int u, int v )
-{
-	return sqrt((x[u] - x[v]) * (x[u] - x[v]) + (y[u] - y[v]) * (y[u] - y[v]));
+    int tmp;
+    scanf("%d",&n);
+    for(int i=1;i<=n;i++)
+        scanf("%d%d",&a[i].x,&a[i].y);
+    for(int i=1;i<=n;i++)
+        for(int j=1;j<=n;j++)
+        {
+            scanf("%1d",&tmp);
+            if(tmp)dis[i][j]=cal(i,j);
+            else if(i!=j)dis[i][j]=inf;
+        }    
+    for(int k=1;k<=n;k++)
+        for(int i=1;i<=n;i++)
+            for(int j=1;j<=n;j++)
+                if(dis[i][k]+dis[k][j]<dis[i][j])
+                    dis[i][j]=dis[i][k]+dis[k][j];
+    for(int i=1;i<=n;i++)
+        for(int j=1;j<=n;j++)
+        {
+            if(dis[i][j]!=inf)ldis[i]=max(dis[i][j],ldis[i]);
+            l1=max(l1,ldis[i]);
+        }
+    for(int i=1;i<=n;i++)
+        for(int j=1;j<=n;j++)
+            if(dis[i][j]==inf)
+                l2=min(ldis[i]+cal(i,j)+ldis[j],l2);
+	ans=max(l1, l2);
+    printf("%.6f",ans);
+    return 0;
 }
