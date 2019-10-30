@@ -1,14 +1,13 @@
 #include <cstdio>
-#include <cctype>
+#include <algorithm>
 
 #define rep(i, a, b) for(register int i = a; i <= b; i++)
 
 const int MAXN = 31;
+const int INF = 0x3f3f3f3f;
 
-int N;
+int N, ans;
 int G[MAXN][MAXN];
-
-inline int read ();
 
 int main()
 {
@@ -19,22 +18,20 @@ int main()
 
 	while(~scanf("%d", &N), N != 0){
 		rep(i, 1, N)
-			rep(j, 1, N)
-				G[i][j] = ( i == j ? 0 : (G[j][i] ? G[j][i]: read()));
+			rep(j, i + 1, N)
+				if(i == j)
+					G[i][j] = 0;
+				else {
+					scanf("%d", &G[i][j]);
+					G[j][i] = G[i][j];
+				}
+		rep(i, 3, N){
+			int sum = INF;
+			rep(j, 2, i - 1){
+				ans = std::min(ans, dist[1][j] - dist
+			}
+		}
 	}
 
 	return 0;
-}
-
-inline int read ()
-{
-	int x = 0;
-	char c = getchar();
-	while(!isdigit(c))
-		c = getchar();
-	while(isdigit(c)){
-		x = (x << 1) + (x << 3) + c - 48;
-		c = getchar();
-	}
-	return x;
 }
