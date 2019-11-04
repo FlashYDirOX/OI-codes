@@ -6,8 +6,8 @@
 const int MAXN = 31;
 const int INF = 0x3f3f3f3f;
 
-int N, ans;
-int G[MAXN][MAXN];
+int N, ans, cnt;
+int G[MAXN][MAXN], dist[MAXN][MAXN];
 
 int main()
 {
@@ -28,10 +28,13 @@ int main()
 		rep(i, 3, N){
 			int sum = INF;
 			rep(j, 2, i - 1){
-				ans = std::min(ans, dist[1][j] - dist
+				ans = std::min(ans, dist[1][i] - dist[1][j] + (dist[i][j] >> 1));
+				cnt += ans;
 			}
 		}
+		printf("%d\n", cnt);
 	}
+
 
 	return 0;
 }
