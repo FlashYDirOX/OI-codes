@@ -7,7 +7,7 @@ const int MAXN = 31;
 const int INF = 0x3f3f3f3f;
 
 int N, ans, cnt;
-int G[MAXN][MAXN], dist[MAXN][MAXN];
+int dist[MAXN][MAXN];
 
 int main()
 {
@@ -17,20 +17,16 @@ int main()
 #endif
 
 	while(~scanf("%d", &N), N != 0){
-		rep(i, 1, N)
-			rep(j, i + 1, N)
-				if(i == j)
-					G[i][j] = 0;
-				else {
-					scanf("%d", &G[i][j]);
-					G[j][i] = G[i][j];
-				}
+		rep(i, 1, N - 1)
+			rep(j, i + 1, N){
+					scanf("%d", &dist[i][j]);
+			}
+		cnt = dist[1][2];
 		rep(i, 3, N){
 			int sum = INF;
-			rep(j, 2, i - 1){
-				ans = std::min(ans, dist[1][i] - dist[1][j] + (dist[i][j] >> 1));
-				cnt += ans;
-			}
+			rep(j, 2, i - 1)
+				sum = std::min(sum, (dist[1][i] - dist[1][j] + dist[j][i]) >> 1);
+			cnt += sum;
 		}
 		printf("%d\n", cnt);
 	}
