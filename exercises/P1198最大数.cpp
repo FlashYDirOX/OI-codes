@@ -8,17 +8,17 @@
 
 typedef long long ll;
 
-const int MAXN = 200001;
+const int MAXN = 200001 << 2;
 const int INF = 0x3f3f3f3f;
 
 using std::max;
 
-ll M, MOD, a[MAXN], cnt, sum[MAXN];
+ll M, MOD, a[MAXN], cnt, sum[MAXN], num;
 char s[10];
 
 inline ll query ( int, int, int, int, int );
 
-inline void insert ( int, int, int, int );
+inline void insert ( int, int, int, int, int );
 
 int main()
 {
@@ -32,10 +32,16 @@ int main()
 	rep(i, 1, M){
 		int L;
 		scanf("%s%d", s, &L);
-		if(s[0] == 'Q')
-			printf("%lld\n", cnt = query(1, 1, M, M - L + 1, M));
-		if(s[0] == 'A')
-			insert(1, 1, M, L);
+		if(s[0] == 'Q'){
+			if(L == 0)
+				printf("%lld\n", cnt = 0);
+			else
+				printf("%lld\n", cnt = query(1, 1, M, num - L + 1, num) % MOD);
+		}
+		if(s[0] == 'A'){
+			insert(1, 1, M, num + 1, ( cnt + L ) % MOD);
+			++num;
+		}
 	}
 
 	return 0;
@@ -43,7 +49,7 @@ int main()
 
 inline ll query ( int rt, int head, int tail, int L, int R )
 {
-	int u = INF, v = INF;
+	int u = -INF, v = -INF;
 	if(head >= L && tail <= R)
 		return sum[rt];
 	if(L <= mid)
@@ -53,17 +59,17 @@ inline ll query ( int rt, int head, int tail, int L, int R )
 	return std::max(u, v);
 }
 
-inline void insert ( int rt, int head, int tail, int node )
+inline void insert ( int rt, int head, int tail, int node, int value )
 {
-	if(head == tail && tail == node){
-		scanf("%lld", &sum[rt]);
+	if(head == tail){
+		sum[rt] = value;
 		return ;
 	}
 	else {
 		if(node <= mid)
-			insert(lson, node);
+			insert(lson, node, value);
 		if(node > mid)
-			insert(rson, node);
-		sum[rt] = sum[rt << 1] + sum[rt << 1 | 1];
+			insert(rson, node, value);
+		sum[rt] = std :: max ( sum[rt << 1], sum[rt << 1 | 1] ) % MOD;
 	}
 }
