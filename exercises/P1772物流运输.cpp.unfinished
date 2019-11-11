@@ -1,0 +1,17 @@
+#include <cstdio>
+
+#define rep(i, a, b) for(register int i = a; i <= b; i++)
+
+int N, M, cost, T;
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+	freopen("in", "r", stdin);
+	freopen("out", "w", stdout);
+#endif
+
+	scanf("%d%d%d%d", &N, &M, &cost, &T);
+
+	return 0;
+}
