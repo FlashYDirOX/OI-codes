@@ -2,6 +2,8 @@
 
 #define rep(i, a, b) for(register int i = a; i <= b; i++)
 
+int N, M, Q;
+
 int main()
 {
 #ifndef ONLINE_JUDGE
@@ -9,13 +11,7 @@ int main()
 	freopen("out", "w", stdout);
 #endif
 
-	scanf("%d%d%d", &N, &M, &K);
-
-	rep(i, 1, M){
-		int u, v, w;
-		scanf("%d%d%d", &u, &v, &w);
-		add_e
-	}
+	scanf("%d%d%d", &N, &M, &Q);
 
 	return 0;
 }
